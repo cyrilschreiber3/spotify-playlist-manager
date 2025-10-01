@@ -1,0 +1,18 @@
+package components
+
+templ Dashboard() {
+	@Base("Spotify Playlist Manager") {
+		<div class="dashboard">
+			<h2>Welcome to your dashboard, <span id="displayName"></span>!</h2>
+			<p>Here you can manage your Spotify playlists.</p>
+			<span id="avatar"></span>
+			<ul>
+				<li>User ID: <span id="id"></span></li>
+				<li>Email: <span id="email"></span></li>
+				<li>Spotify URI: <a id="uri" href="#"></a></li>
+				<li>Link: <a id="url" href="#"></a></li>
+				<li>Profile Image: <span id="imgUrl"></span></li>
+			</ul>
+		</div>
+	}
+}

@@ -7,6 +7,7 @@
       import (fetchTree nixpkgs.locked) {
         overlays = [
           (import "${fetchTree gomod2nix.locked}/overlay.nix")
+          templ.overlays.default
         ];
       }
   ),
@@ -18,4 +19,9 @@ buildGoApplication {
   pwd = ./.;
   src = ./.;
   modules = ./gomod2nix.toml;
+
+  preBuild = ''
+    ${pkgs.templ}/bin/templ generate
+    ${pkgs.tailwindcss_4}/bin/tailwindcss -i ./static/css/input.css -o ./static/css/style.min.css --minify
+  '';
 }

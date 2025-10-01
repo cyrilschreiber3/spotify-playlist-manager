@@ -1,2 +1,7 @@
 /gomod2nix-template
 spotify-playlist-manager
+.env
+.env.local
+/tmp
+/result
+/localStorage
