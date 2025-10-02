@@ -66,16 +66,70 @@ func openCollection(collectionName string) (*mongo.Collection, error) {
 	return collection, nil
 }
 
-func GetUserByID(userID string) (models.User, error) {
+func GetUserByID(ctx context.Context, userID string) (models.User, error) {
 	userCollection, err := openCollection("users")
 	if err != nil {
 		return models.User{}, err
 	}
 
 	var user models.User
-	err = userCollection.FindOne(context.Background(), bson.M{"user_id": userID}).Decode(&user)
+	err = userCollection.FindOne(ctx, bson.M{"user_id": userID}).Decode(&user)
 	if err != nil {
 		return models.User{}, err
 	}
 	return user, nil
+}
+
+func CreateSession(ctx context.Context, session *models.UserSession) (*mongo.InsertOneResult, error) {
+	sessionCollection, err := openCollection("sessions")
+	if err != nil {
+		return nil, err
+	}
+
+	result, err := sessionCollection.InsertOne(ctx, session)
+	return result, err
+}
+
+func CreateUser(ctx context.Context, user *models.User) (*mongo.InsertOneResult, error) {
+	userCollection, err := openCollection("users")
+	if err != nil {
+		return nil, err
+	}
+
+	result, err := userCollection.InsertOne(ctx, user)
+	return result, err
+}
+
+func UpdateUserByID(ctx context.Context, userID string, update bson.M) (*mongo.UpdateResult, error) {
+	userCollection, err := openCollection("users")
+	if err != nil {
+		return nil, err
+	}
+
+	result, err := userCollection.UpdateOne(ctx, bson.M{"user_id": userID}, bson.M{"$set": update})
+	return result, err
+}
+
+func GetSessionByID(ctx context.Context, sessionID string) (models.UserSession, error) {
+	sessionCollection, err := openCollection("sessions")
+	if err != nil {
+		return models.UserSession{}, err
+	}
+
+	var session models.UserSession
+	err = sessionCollection.FindOne(ctx, bson.M{"session_id": sessionID}).Decode(&session)
+	if err != nil {
+		return models.UserSession{}, err
+	}
+	return session, nil
+}
+
+func UpdateSessionByID(ctx context.Context, sessionID string, update bson.M) (*mongo.UpdateResult, error) {
+	sessionCollection, err := openCollection("sessions")
+	if err != nil {
+		return nil, err
+	}
+
+	result, err := sessionCollection.UpdateOne(ctx, bson.M{"session_id": sessionID}, bson.M{"$set": update})
+	return result, err
 }

@@ -1,18 +1,19 @@
 package components
 
-templ Dashboard() {
+import "github.com/cyrilschreiber3/spotify-playlist-manager/models"
+
+templ Dashboard(user models.User) {
 	@Base("Spotify Playlist Manager") {
 		<div class="dashboard">
-			<h2>Welcome to your dashboard, <span id="displayName"></span>!</h2>
+			<h2>Welcome to your dashboard, <span id="displayName">{ user.Username }</span>!</h2>
 			<p>Here you can manage your Spotify playlists.</p>
 			<span id="avatar"></span>
 			<ul>
-				<li>User ID: <span id="id"></span></li>
-				<li>Email: <span id="email"></span></li>
-				<li>Spotify URI: <a id="uri" href="#"></a></li>
-				<li>Link: <a id="url" href="#"></a></li>
-				<li>Profile Image: <span id="imgUrl"></span></li>
+				<li>User ID: <span id="id">{ user.UserID }</span></li>
+				<li>Email: <span id="email">{ user.Email }</span></li>
+				<li>Profile Image: <span id="imgUrl">{ user.ProfileImage }</span></li>
 			</ul>
+			<button onclick="location.href='/logout'">Logout</button>
 		</div>
 	}
 }
