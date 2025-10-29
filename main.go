@@ -19,6 +19,7 @@ func main() {
 
 	controllers.InitSpotifyAuth()
 
+	log.Println("Starting Gin web server...")
 	router := gin.Default()
 	utils.SetupRouter(router)
 	routes.SetupRoutes(router)

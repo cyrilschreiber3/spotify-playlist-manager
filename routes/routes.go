@@ -9,13 +9,14 @@ import (
 
 func SetupRoutes(router *gin.Engine) {
 
-	router.GET("/", handlers.Index())
 	router.Static("/static", "./static")
-	router.GET("/login", controllers.Register())
+
+	router.Use(middlewares.AuthenticateUser())
+
+	router.GET("/login", handlers.Login())
+	router.GET("/logout", handlers.Logout())
+	router.GET("/api/login", controllers.Register())
 	router.GET("/api/spotifycallback", controllers.SpotifyCallback())
 
-	router.Use(middlewares.AuthMiddleware())
-
-	router.GET("/dashboard", controllers.Dashboard())
-	router.GET("/logout", controllers.Logout())
+	router.GET("/", middlewares.AllowAuthenticated(), controllers.Dashboard())
 }

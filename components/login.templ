@@ -1,0 +1,17 @@
+package components
+
+templ Login(loginResult string) {
+	@Base("Spotify Playlist Manager") {
+		<div class="login">
+			<div style="display:flex;align-items:center;gap:8px;">
+				<button hx-get="/api/login" hx-target="#login-result" hx-swap="innerHTML">
+					Login with Spotify
+				</button>
+				@Spinner(40)
+			</div>
+			<div id="login-result">
+				{ loginResult }
+			</div>
+		</div>
+	}
+}

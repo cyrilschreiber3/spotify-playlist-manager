@@ -23,6 +23,7 @@ func mongoInit() {
 
 	clientOptions := options.Client().ApplyURI(dbUri)
 
+	log.Println("Connecting to MongoDB...")
 	client, err := mongo.Connect(clientOptions)
 	if err != nil {
 		log.Fatal("Error connecting to MongoDB:", err)
@@ -33,13 +34,17 @@ func mongoInit() {
 	}
 
 	dbClient = client
+
+	log.Println("Connected to MongoDB")
 }
 
 func mongoClose() {
 	if dbClient != nil {
+		log.Println("Disconnecting from MongoDB...")
 		if err := dbClient.Disconnect(context.Background()); err != nil {
 			log.Fatal("Error disconnecting from MongoDB:", err)
 		}
+		log.Println("Disconnected from MongoDB")
 	}
 }
 
@@ -58,6 +63,7 @@ func openCollection(collectionName string) (*mongo.Collection, error) {
 		log.Fatal("Database connection is not established")
 	}
 
+	log.Println("Opening collection:", collectionName)
 	collection = dbClient.Database(databaseName).Collection(collectionName)
 	if collection == nil {
 		return nil, errors.New("failed to open collection: " + collectionName)

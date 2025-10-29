@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net/http"
@@ -34,26 +35,35 @@ func InitSpotifyAuth() {
 	auth = spotifyauth.New(spotifyauth.WithRedirectURL(redirectURL), spotifyauth.WithScopes(scopes...))
 }
 
+func NewSession(c context.Context) (models.UserSession, error) {
+	var session models.UserSession
+
+	session.SessionID = uuid.NewString()
+	session.UserID = ""
+	session.ExpiresAt = time.Now().Add(24 * time.Hour)
+
+	_, err := database.CreateSession(c, &session)
+	if err != nil {
+		return models.UserSession{}, err
+	}
+
+	return session, err
+}
+
+func Login() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		component := components.Login("")
+		utils.RenderTemplate(c, http.StatusOK, component)
+	}
+}
+
 func Register() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var session models.UserSession
+		sessionID := c.MustGet("session_id").(string)
 
-		session.SessionID = uuid.NewString()
-		session.UserID = ""
-		session.ExpiresAt = time.Now()
+		registerURL := auth.AuthURL(sessionID)
 
-		_, err := database.CreateSession(c.Request.Context(), &session)
-		if err != nil {
-			err = utils.RenderTemplate(c, http.StatusInternalServerError, components.Index("Error creating session"))
-			if err != nil {
-				c.Status(http.StatusInternalServerError)
-			}
-			return
-		}
-
-		registerURL := auth.AuthURL(session.SessionID)
-
-		c.Redirect(http.StatusTemporaryRedirect, registerURL)
+		c.Writer.Header().Set("HX-Redirect", registerURL)
 
 	}
 
@@ -61,12 +71,16 @@ func Register() gin.HandlerFunc {
 
 func SpotifyCallback() gin.HandlerFunc {
 	return func(c *gin.Context) {
+
+		sessionID := c.MustGet("session_id").(string)
+		if c.Query("state") != sessionID {
+			utils.RenderTemplate(c, http.StatusForbidden, components.Login("Invalid session state"))
+			return
+		}
+
 		token, err := auth.Token(c.Request.Context(), c.Query("state"), c.Request)
 		if err != nil {
-			err = utils.RenderTemplate(c, http.StatusForbidden, components.Index("Error getting token"))
-			if err != nil {
-				c.Status(http.StatusInternalServerError)
-			}
+			utils.RenderTemplate(c, http.StatusForbidden, components.Login("Error getting token"))
 			return
 		}
 
@@ -74,10 +88,7 @@ func SpotifyCallback() gin.HandlerFunc {
 
 		spotifyUser, err := client.CurrentUser(c.Request.Context())
 		if err != nil {
-			err = utils.RenderTemplate(c, http.StatusForbidden, components.Index("Error fetching user data from Spotify"))
-			if err != nil {
-				c.Status(http.StatusInternalServerError)
-			}
+			utils.RenderTemplate(c, http.StatusForbidden, components.Login("Error fetching user data from Spotify"))
 			return
 		}
 
@@ -87,26 +98,22 @@ func SpotifyCallback() gin.HandlerFunc {
 		user.Email = spotifyUser.Email
 		if len(spotifyUser.Images) > 0 {
 			user.ProfileImage = spotifyUser.Images[0].URL
+		} else {
+			user.ProfileImage = fmt.Sprintf("https://ui-avatars.com/api/?name=%c", user.Username[0])
 		}
 		user.SpotifyToken = token.AccessToken
 
 		_, err = database.GetUserByID(c.Request.Context(), user.UserID)
 		if err != nil && err != mongo.ErrNoDocuments {
-			err = utils.RenderTemplate(c, http.StatusInternalServerError, components.Index("Database error"))
 			log.Println("Database error:", err)
-			if err != nil {
-				c.Status(http.StatusInternalServerError)
-			}
+			utils.RenderTemplate(c, http.StatusInternalServerError, components.Login("Database error"))
 			return
 		}
 
 		if err == mongo.ErrNoDocuments {
 			_, err = database.CreateUser(c.Request.Context(), &user)
 			if err != nil {
-				err = utils.RenderTemplate(c, http.StatusInternalServerError, components.Index("Error creating user"))
-				if err != nil {
-					c.Status(http.StatusInternalServerError)
-				}
+				utils.RenderTemplate(c, http.StatusInternalServerError, components.Login("Error creating user"))
 				return
 			}
 		} else {
@@ -119,21 +126,14 @@ func SpotifyCallback() gin.HandlerFunc {
 
 			_, err = database.UpdateUserByID(c.Request.Context(), user.UserID, updatedUser)
 			if err != nil {
-				err = utils.RenderTemplate(c, http.StatusInternalServerError, components.Index("Error updating user"))
-				if err != nil {
-					c.Status(http.StatusInternalServerError)
-				}
+				utils.RenderTemplate(c, http.StatusInternalServerError, components.Login("Error updating user"))
 				return
 			}
 		}
 
-		sessionID := c.Query("state")
 		session, err := database.GetSessionByID(c.Request.Context(), sessionID)
 		if err != nil {
-			err = utils.RenderTemplate(c, http.StatusInternalServerError, components.Index("Error fetching session"))
-			if err != nil {
-				c.Status(http.StatusInternalServerError)
-			}
+			utils.RenderTemplate(c, http.StatusInternalServerError, components.Login("Error fetching session"))
 			return
 		}
 
@@ -145,43 +145,14 @@ func SpotifyCallback() gin.HandlerFunc {
 			"expires_at": session.ExpiresAt,
 		})
 		if err != nil {
-			err = utils.RenderTemplate(c, http.StatusInternalServerError, components.Index("Error updating session"))
-			if err != nil {
-				c.Status(http.StatusInternalServerError)
-			}
+			utils.RenderTemplate(c, http.StatusInternalServerError, components.Login("Error updating session"))
 			return
 		}
 
 		c.SetCookie("session_id", session.SessionID, 3600*24, "/", "", false, true)
 
-		c.Redirect(http.StatusTemporaryRedirect, "/dashboard")
+		c.Redirect(http.StatusTemporaryRedirect, "/")
 
-	}
-}
-
-func Dashboard() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		userID, exists := c.Get("user_id")
-		if !exists {
-			err := utils.RenderTemplate(c, http.StatusInternalServerError, components.Index("User ID not found in context"))
-			if err != nil {
-				c.Status(http.StatusInternalServerError)
-			}
-			return
-		}
-		user, err := database.GetUserByID(c.Request.Context(), userID.(string))
-		if err != nil {
-			err = utils.RenderTemplate(c, http.StatusInternalServerError, components.Index("Error fetching user data"))
-			if err != nil {
-				c.Status(http.StatusInternalServerError)
-			}
-			return
-		}
-		err = utils.RenderTemplate(c, http.StatusOK, components.Dashboard(user))
-		if err != nil {
-			c.Status(http.StatusInternalServerError)
-			return
-		}
 	}
 }
 
