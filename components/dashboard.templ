@@ -1,9 +1,10 @@
 package components
 
 import "github.com/cyrilschreiber3/spotify-playlist-manager/models"
+import "github.com/gin-gonic/gin"
 
-templ Dashboard(user models.User) {
-	@Base("Spotify Playlist Manager") {
+templ Dashboard(c *gin.Context, user models.User) {
+	@Base(c, "Spotify Playlist Manager") {
 		<div class="dashboard">
 			<h2>Welcome to your dashboard, <span id="displayName">{ user.Username }</span>!</h2>
 			<p>Here you can manage your Spotify playlists.</p>

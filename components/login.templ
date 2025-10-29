@@ -1,10 +1,12 @@
 package components
 
-templ Login(loginResult string) {
-	@Base("Spotify Playlist Manager") {
+import "github.com/gin-gonic/gin"
+
+templ Login(c *gin.Context, loginResult string) {
+	@Base(c, "Spotify Playlist Manager") {
 		<div class="login">
 			<div style="display:flex;align-items:center;gap:8px;">
-				<button hx-get="/api/login" hx-target="#login-result" hx-swap="innerHTML">
+				<button class="py-2 px-4 rounded-xl cursor-pointer shadow-md bg-primary hover:bg-secondary text-bg-dark" hx-get="/api/login" hx-target="#login-result" hx-swap="innerHTML">
 					Login with Spotify
 				</button>
 				@Spinner(40)

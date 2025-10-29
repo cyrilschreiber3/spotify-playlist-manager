@@ -19,7 +19,7 @@ func AuthenticateUser() gin.HandlerFunc {
 			session, err := controllers.NewSession(c)
 			if err != nil {
 				log.Println("Error creating new session:", err)
-				utils.RenderTemplate(c, http.StatusInternalServerError, components.Login("Error creating session"))
+				utils.RenderTemplate(c, http.StatusInternalServerError, components.Login(c, "Error creating session"))
 				return
 			}
 			c.Set("session_id", session.SessionID)

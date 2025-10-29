@@ -10,7 +10,12 @@ import (
 
 func Login() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		component := components.Login("")
+		userID, exists := c.Get("user_id")
+		if exists && userID != "" {
+			c.Redirect(http.StatusTemporaryRedirect, "/")
+			return
+		}
+		component := components.Login(c, "")
 		utils.RenderTemplate(c, http.StatusOK, component)
 	}
 }
