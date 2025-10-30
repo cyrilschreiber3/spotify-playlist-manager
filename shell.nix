@@ -28,29 +28,10 @@
       '';
   });
 
-  prettierConfig = pkgs.writeTextFile {
-    name = "prettierrc";
-    text = ''
-      {
-        "plugins": [
-          "${prettier-plugin-go-template-patched}/lib/node_modules/prettier-plugin-go-template/lib/index.js",
-          "${pkgs.mypkgs.prettier-plugin-tailwindcss-extra-plus}/lib/node_modules/prettier-plugin-tailwindcss-extra-plus/dist/main.js",
-          "${pkgs.mypkgs.prettier-plugin-tailwindcss}/lib/node_modules/prettier-plugin-tailwindcss/dist/index.mjs"
-        ],
-        "overrides": [
-          {
-            "files": "*.gohtml",
-            "options": {
-              "parser": "go-template"
-            }
-          },
-          {
-            "files": "*.templ",
-            "options": { "parser": "tailwindcss-extra-plus" }
-          }
-        ]
-      }
-    '';
+  prettierPluginsPaths = {
+    prettier_go_template_plugin_path = "${prettier-plugin-go-template-patched}/lib/node_modules/prettier-plugin-go-template/lib/index.js";
+    prettier_tailwindcss_extra_plus_plugin_path = "${pkgs.mypkgs.prettier-plugin-tailwindcss-extra-plus}/lib/node_modules/prettier-plugin-tailwindcss-extra-plus/dist/main.js";
+    prettier_tailwindcss_plugin_path = "${pkgs.mypkgs.prettier-plugin-tailwindcss}/lib/node_modules/prettier-plugin-tailwindcss/dist/index.mjs";
   };
 in
   with pkgs;
@@ -86,8 +67,10 @@ in
       ];
 
       shellHook = ''
-        ln -sf ${prettierConfig} ./.prettierrc
         sed -i '/.*prettier.prettierPath*/c\  "prettier.prettierPath\": "${prettier-plugin-go-template-patched}/lib/node_modules/prettier",' ./.vscode/settings.json
+
+        git update-index --assume-unchanged .prettierc
+        echo '${builtins.toJSON prettierPluginsPaths}' | ${jinja2-cli}/bin/jinja2 --format=json prettierrc.j2 > .prettierrc
 
         echo -e "Welcome to the Go dev environment!\n"
 

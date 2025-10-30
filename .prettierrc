@@ -1,1 +1,20 @@
-/nix/store/pfsydyjvx5wf9h7mspdgbq3hzih5ac5b-prettierrc
+{
+  "plugins": [
+    "prettier-plugin-go-template",
+    "prettier-plugin-tailwindcss-extra-plus",
+    "prettier-plugin-tailwindcss"
+  ],
+  "tailwindStylesheet": "./tailwind.css",
+  "overrides": [
+    {
+      "files": "*.gohtml",
+      "options": {
+        "parser": "go-template"
+      }
+    },
+    {
+      "files": "*.templ",
+      "options": { "parser": "tailwindcss-extra-plus" }
+    }
+  ]
+}
