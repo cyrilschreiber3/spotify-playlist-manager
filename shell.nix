@@ -33,7 +33,9 @@
     text = ''
       {
         "plugins": [
-          "${prettier-plugin-go-template-patched}/lib/node_modules/prettier-plugin-go-template/lib/index.js"
+          "${prettier-plugin-go-template-patched}/lib/node_modules/prettier-plugin-go-template/lib/index.js",
+          "${pkgs.mypkgs.prettier-plugin-tailwindcss-extra-plus}/lib/node_modules/prettier-plugin-tailwindcss-extra-plus/dist/main.js",
+          "${pkgs.mypkgs.prettier-plugin-tailwindcss}/lib/node_modules/prettier-plugin-tailwindcss/dist/index.mjs"
         ],
         "overrides": [
           {
@@ -41,6 +43,10 @@
             "options": {
               "parser": "go-template"
             }
+          },
+          {
+            "files": "*.templ",
+            "options": { "parser": "tailwindcss-extra-plus" }
           }
         ]
       }
@@ -74,6 +80,8 @@ in
         # Web development
         nodePackages.prettier
         prettier-plugin-go-template-patched
+        mypkgs.prettier-plugin-tailwindcss
+        mypkgs.prettier-plugin-tailwindcss-extra-plus
         tailwindcss_4
       ];
 

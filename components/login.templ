@@ -6,7 +6,7 @@ templ Login(c *gin.Context, loginResult string) {
 	@Base(c, "Spotify Playlist Manager") {
 		<div class="login">
 			<div style="display:flex;align-items:center;gap:8px;">
-				<button class="py-2 px-4 rounded-xl cursor-pointer shadow-md bg-primary hover:bg-secondary text-bg-dark" hx-get="/api/login" hx-target="#login-result" hx-swap="innerHTML">
+				<button class="bg-primary hover:bg-secondary text-bg-dark cursor-pointer rounded-xl px-4 py-2 shadow-md" hx-get="/api/login" hx-target="#login-result" hx-swap="innerHTML">
 					Login with Spotify
 				</button>
 				@Spinner(40)

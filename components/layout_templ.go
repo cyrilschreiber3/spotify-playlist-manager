@@ -44,7 +44,7 @@ func Base(c *gin.Context, title string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</title></head><body class=\"bg-bg-dark text-text p-5\"><nav class=\"container\"><a href=\"/\">Home</a> <a href=\"/login\">Login</a></nav><h1 class=\"text-4xl font-bold py-4\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</title></head><body class=\"bg-bg-dark text-text p-5\"><nav class=\"container\"><a href=\"/\">Home</a> <a href=\"/login\">Login</a></nav><h1 class=\"py-4 text-4xl font-bold\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

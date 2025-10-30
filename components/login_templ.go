@@ -43,7 +43,7 @@ func Login(c *gin.Context, loginResult string) templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"login\"><div style=\"display:flex;align-items:center;gap:8px;\"><button class=\"py-2 px-4 rounded-xl cursor-pointer shadow-md bg-primary hover:bg-secondary text-bg-dark\" hx-get=\"/api/login\" hx-target=\"#login-result\" hx-swap=\"innerHTML\">Login with Spotify</button>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"login\"><div style=\"display:flex;align-items:center;gap:8px;\"><button class=\"bg-primary hover:bg-secondary text-bg-dark cursor-pointer rounded-xl px-4 py-2 shadow-md\" hx-get=\"/api/login\" hx-target=\"#login-result\" hx-swap=\"innerHTML\">Login with Spotify</button>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

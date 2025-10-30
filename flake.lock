@@ -77,6 +77,26 @@
         "type": "github"
       }
     },
+    "my-packages": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1761784547,
+        "narHash": "sha256-ZOBw33FkRDMtt4JIyIKcit+qml7rj66GIf0pCcI5VRk=",
+        "owner": "cyrilschreiber3",
+        "repo": "nur-packages",
+        "rev": "5df90a83d121fde6394786f37db83a4a0dd38c07",
+        "type": "github"
+      },
+      "original": {
+        "owner": "cyrilschreiber3",
+        "repo": "nur-packages",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1759036355,
@@ -97,6 +117,7 @@
       "inputs": {
         "flake-utils": "flake-utils",
         "gomod2nix": "gomod2nix",
+        "my-packages": "my-packages",
         "nixpkgs": "nixpkgs",
         "templ": "templ"
       }
