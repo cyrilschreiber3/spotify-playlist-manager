@@ -1,0 +1,22 @@
+package components
+
+import (
+	"github.com/cyrilschreiber3/spotify-playlist-manager/models"
+	"github.com/cyrilschreiber3/spotify-playlist-manager/utils"
+)
+
+templ PlaylistCardItem(playlist models.Playlist) {
+	<div class="hover:bg-bg-muted flex items-center justify-between rounded-lg p-3">
+		<div class="flex items-center gap-3">
+			<div class="flex h-10 w-10 items-center justify-center rounded-md bg-gradient-to-br from-green-400 to-teal-500 font-bold text-white">RW</div>
+			<div>
+				<div class="font-semibold">{ playlist.Name }</div>
+				<div class="text-text-muted text-sm">{ len(playlist.Songs) } tracks • { utils.IntToTimeDuration(164*60) }</div>
+			</div>
+		</div>
+		<div class="flex items-center gap-2">
+			<button class="border-border-muted rounded border px-3 py-1 text-sm">View</button>
+			<button class="bg-primary rounded px-3 py-1 text-sm text-white">Edit</button>
+		</div>
+	</div>
+}

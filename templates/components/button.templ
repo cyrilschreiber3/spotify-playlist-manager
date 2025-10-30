@@ -1,0 +1,13 @@
+package components
+
+templ Button(text string, attrs templ.Attributes) {
+	<button
+		class="bg-primary hover:bg-secondary text-bg-dark custom-shadow flex cursor-pointer items-center gap-2 rounded-lg px-4 py-2 shadow-md disabled:cursor-not-allowed disabled:opacity-50"
+		hx-indicator="find #spinner"
+		hx-disabled-elt="this"
+		{ attrs... }
+	>
+		<p>{ text }</p>
+		@Spinner(20)
+	</button>
+}

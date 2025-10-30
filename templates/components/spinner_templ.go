@@ -8,7 +8,10 @@ package components
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-func SimpleError(message string) templ.Component {
+import "fmt"
+
+// Other options: https://magecdn.com/tools/svg-loaders
+func Spinner(size int) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -29,20 +32,20 @@ func SimpleError(message string) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<p style=\"color: red;\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<svg class=\"htmx-indicator hidden [&.htmx-request]:block\" id=\"spinner\" style=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var2 string
-		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(message)
+		templ_7745c5c3_Var2, templ_7745c5c3_Err = templruntime.SanitizeStyleAttributeValues(fmt.Sprintf("width:%dpx;height:%dpx;", size, size))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/errors.templ`, Line: 4, Col: 33}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/components/spinner.templ`, Line: 10, Col: 60}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</p>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "\" stroke=\"#FFFFFFFF\" viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\"><g><circle cx=\"12\" cy=\"12\" r=\"9.5\" fill=\"none\" stroke-width=\"3\" stroke-linecap=\"round\"><animate attributeName=\"stroke-dasharray\" dur=\"1.5s\" calcMode=\"spline\" values=\"0 150;42 150;42 150;42 150\" keyTimes=\"0;0.475;0.95;1\" keySplines=\"0.42,0,0.58,1;0.42,0,0.58,1;0.42,0,0.58,1\" repeatCount=\"indefinite\"></animate><animate attributeName=\"stroke-dashoffset\" dur=\"1.5s\" calcMode=\"spline\" values=\"0;-16;-59;-59\" keyTimes=\"0;0.475;0.95;1\" keySplines=\"0.42,0,0.58,1;0.42,0,0.58,1;0.42,0,0.58,1\" repeatCount=\"indefinite\"></animate></circle><animateTransform attributeName=\"transform\" type=\"rotate\" dur=\"2s\" values=\"0 12 12;360 12 12\" repeatCount=\"indefinite\"></animateTransform></g></svg>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

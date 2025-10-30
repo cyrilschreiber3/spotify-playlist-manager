@@ -7,9 +7,9 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/cyrilschreiber3/spotify-playlist-manager/components"
 	"github.com/cyrilschreiber3/spotify-playlist-manager/database"
 	"github.com/cyrilschreiber3/spotify-playlist-manager/models"
+	"github.com/cyrilschreiber3/spotify-playlist-manager/templates/pages"
 	"github.com/cyrilschreiber3/spotify-playlist-manager/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/zmb3/spotify/v2"
@@ -52,7 +52,7 @@ func NewSession(c context.Context) (models.UserSession, error) {
 
 func Login() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		component := components.Login(c, "")
+		component := pages.Login(c, "")
 		utils.RenderTemplate(c, http.StatusOK, component)
 	}
 }
@@ -74,13 +74,13 @@ func SpotifyCallback() gin.HandlerFunc {
 
 		sessionID := c.MustGet("session_id").(string)
 		if c.Query("state") != sessionID {
-			utils.RenderTemplate(c, http.StatusForbidden, components.Login(c, "Invalid session state"))
+			utils.RenderTemplate(c, http.StatusForbidden, pages.Login(c, "Invalid session state"))
 			return
 		}
 
 		token, err := auth.Token(c.Request.Context(), c.Query("state"), c.Request)
 		if err != nil {
-			utils.RenderTemplate(c, http.StatusForbidden, components.Login(c, "Error getting token"))
+			utils.RenderTemplate(c, http.StatusForbidden, pages.Login(c, "Error getting token"))
 			return
 		}
 
@@ -88,7 +88,7 @@ func SpotifyCallback() gin.HandlerFunc {
 
 		spotifyUser, err := client.CurrentUser(c.Request.Context())
 		if err != nil {
-			utils.RenderTemplate(c, http.StatusForbidden, components.Login(c, "Error fetching user data from Spotify"))
+			utils.RenderTemplate(c, http.StatusForbidden, pages.Login(c, "Error fetching user data from Spotify"))
 			return
 		}
 
@@ -106,14 +106,14 @@ func SpotifyCallback() gin.HandlerFunc {
 		_, err = database.GetUserByID(c.Request.Context(), user.UserID)
 		if err != nil && err != mongo.ErrNoDocuments {
 			log.Println("Database error:", err)
-			utils.RenderTemplate(c, http.StatusInternalServerError, components.Login(c, "Database error"))
+			utils.RenderTemplate(c, http.StatusInternalServerError, pages.Login(c, "Database error"))
 			return
 		}
 
 		if err == mongo.ErrNoDocuments {
 			_, err = database.CreateUser(c.Request.Context(), &user)
 			if err != nil {
-				utils.RenderTemplate(c, http.StatusInternalServerError, components.Login(c, "Error creating user"))
+				utils.RenderTemplate(c, http.StatusInternalServerError, pages.Login(c, "Error creating user"))
 				return
 			}
 		} else {
@@ -126,14 +126,14 @@ func SpotifyCallback() gin.HandlerFunc {
 
 			_, err = database.UpdateUserByID(c.Request.Context(), user.UserID, updatedUser)
 			if err != nil {
-				utils.RenderTemplate(c, http.StatusInternalServerError, components.Login(c, "Error updating user"))
+				utils.RenderTemplate(c, http.StatusInternalServerError, pages.Login(c, "Error updating user"))
 				return
 			}
 		}
 
 		session, err := database.GetSessionByID(c.Request.Context(), sessionID)
 		if err != nil {
-			utils.RenderTemplate(c, http.StatusInternalServerError, components.Login(c, "Error fetching session"))
+			utils.RenderTemplate(c, http.StatusInternalServerError, pages.Login(c, "Error fetching session"))
 			return
 		}
 
@@ -145,7 +145,7 @@ func SpotifyCallback() gin.HandlerFunc {
 			"expires_at": session.ExpiresAt,
 		})
 		if err != nil {
-			utils.RenderTemplate(c, http.StatusInternalServerError, components.Login(c, "Error updating session"))
+			utils.RenderTemplate(c, http.StatusInternalServerError, pages.Login(c, "Error updating session"))
 			return
 		}
 

@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/cyrilschreiber3/spotify-playlist-manager/components"
 	"github.com/cyrilschreiber3/spotify-playlist-manager/controllers"
 	"github.com/cyrilschreiber3/spotify-playlist-manager/database"
+	"github.com/cyrilschreiber3/spotify-playlist-manager/templates/pages"
 	"github.com/cyrilschreiber3/spotify-playlist-manager/utils"
 	"github.com/gin-gonic/gin"
 )
@@ -19,7 +19,7 @@ func AuthenticateUser() gin.HandlerFunc {
 			session, err := controllers.NewSession(c)
 			if err != nil {
 				log.Println("Error creating new session:", err)
-				utils.RenderTemplate(c, http.StatusInternalServerError, components.Login(c, "Error creating session"))
+				utils.RenderTemplate(c, http.StatusInternalServerError, pages.Login(c, "Error creating session"))
 				return
 			}
 			c.Set("session_id", session.SessionID)

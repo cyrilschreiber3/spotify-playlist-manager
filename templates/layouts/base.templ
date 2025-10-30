@@ -1,6 +1,9 @@
-package components
+package layouts
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/cyrilschreiber3/spotify-playlist-manager/templates/partials"
+	"github.com/gin-gonic/gin"
+)
 
 templ Base(c *gin.Context, title string) {
 	<!DOCTYPE html>
@@ -13,13 +16,11 @@ templ Base(c *gin.Context, title string) {
 			<link rel="stylesheet" href="/static/styles.css"/>
 			<title>{ title }</title>
 		</head>
-		<body class="bg-bg-dark text-text p-5">
-			<nav class="container">
-				<a href="/">Home</a>
-				<a href="/login">Login</a>
-			</nav>
-			<h1 class="py-4 text-4xl font-bold">{ title }</h1>
-			{ children... }
+		<body class="bg-bg-dark text-text">
+			@partials.Header()
+			<main class="mx-auto mt-8 max-w-5xl p-4">
+				{ children... }
+			</main>
 		</body>
 	</html>
 }

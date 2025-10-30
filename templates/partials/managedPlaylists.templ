@@ -1,0 +1,75 @@
+package partials
+
+import (
+	"github.com/cyrilschreiber3/spotify-playlist-manager/models"
+	"github.com/cyrilschreiber3/spotify-playlist-manager/templates/components"
+)
+
+templ ManagedPlaylists() {
+	@components.Card("Managed Playlists", "") {
+		<div id="managed-playlists-list" class="space-y-3 px-6 py-4">
+			@components.PlaylistCardItem(models.Playlist{
+				Name: "Chill Vibes",
+				Songs: []models.Song{
+					models.Song{"1", "Song A", "Artist 1", "Album X", ""},
+				},
+			})
+			<!-- Playlist item -->
+			<div class="hover:bg-bg-muted flex items-center justify-between rounded-lg p-3">
+				<div class="flex items-center gap-3">
+					<div class="flex h-10 w-10 items-center justify-center rounded-md bg-gradient-to-br from-indigo-500 to-pink-500 font-bold text-white">CV</div>
+					<div>
+						<div class="font-semibold">Chill Vibes</div>
+						<div class="text-text-muted text-sm">24 tracks • 1 hr 35 min</div>
+					</div>
+				</div>
+				<div class="flex items-center gap-2">
+					<button class="border-border-muted rounded border px-3 py-1 text-sm">View</button>
+					<button class="bg-primary rounded px-3 py-1 text-sm text-white">Edit</button>
+				</div>
+			</div>
+			<!-- Playlist item -->
+			<div class="hover:bg-bg-muted flex items-center justify-between rounded-lg p-3">
+				<div class="flex items-center gap-3">
+					<div class="flex h-10 w-10 items-center justify-center rounded-md bg-gradient-to-br from-green-400 to-teal-500 font-bold text-white">RW</div>
+					<div>
+						<div class="font-semibold">Roadtrip Weekend</div>
+						<div class="text-text-muted text-sm">40 tracks • 2 hr 45 min</div>
+					</div>
+				</div>
+				<div class="flex items-center gap-2">
+					<button class="border-border-muted rounded border px-3 py-1 text-sm">View</button>
+					<button class="bg-primary rounded px-3 py-1 text-sm text-white">Edit</button>
+				</div>
+			</div>
+			<!-- Playlist item -->
+			<div class="hover:bg-bg-muted flex items-center justify-between rounded-lg p-3">
+				<div class="flex items-center gap-3">
+					<div class="flex h-10 w-10 items-center justify-center rounded-md bg-gradient-to-br from-yellow-400 to-orange-500 font-bold text-white">PW</div>
+					<div>
+						<div class="font-semibold">Party Warmup</div>
+						<div class="text-text-muted text-sm">32 tracks • 1 hr 50 min</div>
+					</div>
+				</div>
+				<div class="flex items-center gap-2">
+					<button class="border-border-muted rounded border px-3 py-1 text-sm">View</button>
+					<button class="bg-primary rounded px-3 py-1 text-sm text-white">Edit</button>
+				</div>
+			</div>
+			<!-- Playlist item -->
+			<div class="hover:bg-bg-muted flex items-center justify-between rounded-lg p-3">
+				<div class="flex items-center gap-3">
+					<div class="flex h-10 w-10 items-center justify-center rounded-md bg-gradient-to-br from-slate-400 to-slate-600 font-bold text-white">FT</div>
+					<div>
+						<div class="font-semibold">Focus Time</div>
+						<div class="text-text-muted text-sm">18 tracks • 1 hr 10 min</div>
+					</div>
+				</div>
+				<div class="flex items-center gap-2">
+					<button class="border-border-muted rounded border px-3 py-1 text-sm">View</button>
+					<button class="bg-primary rounded px-3 py-1 text-sm text-white">Edit</button>
+				</div>
+			</div>
+		</div>
+	}
+}

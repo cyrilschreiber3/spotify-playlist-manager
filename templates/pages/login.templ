@@ -1,0 +1,24 @@
+package pages
+
+import (
+	"github.com/cyrilschreiber3/spotify-playlist-manager/templates/components"
+	"github.com/cyrilschreiber3/spotify-playlist-manager/templates/layouts"
+	"github.com/gin-gonic/gin"
+)
+
+templ Login(c *gin.Context, loginResult string) {
+	@layouts.Base(c, "Spotify Playlist Manager") {
+		<div class="login">
+			<div class="flex content-center justify-center gap-2">
+				@components.Button("Login with Spotify", templ.Attributes{
+					"hx-get":    "/api/login",
+					"hx-target": "#login-result",
+					"hx-swap":   "innerHTML",
+				})
+			</div>
+			<div id="login-result">
+				{ loginResult }
+			</div>
+		</div>
+	}
+}

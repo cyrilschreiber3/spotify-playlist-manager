@@ -3,7 +3,7 @@ package handlers
 import (
 	"net/http"
 
-	"github.com/cyrilschreiber3/spotify-playlist-manager/components"
+	"github.com/cyrilschreiber3/spotify-playlist-manager/templates/pages"
 	"github.com/cyrilschreiber3/spotify-playlist-manager/utils"
 	"github.com/gin-gonic/gin"
 )
@@ -15,7 +15,7 @@ func Login() gin.HandlerFunc {
 			c.Redirect(http.StatusTemporaryRedirect, "/")
 			return
 		}
-		component := components.Login(c, "")
+		component := pages.Login(c, "")
 		utils.RenderTemplate(c, http.StatusOK, component)
 	}
 }
